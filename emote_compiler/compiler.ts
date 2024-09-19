@@ -295,8 +295,9 @@ if (!up_to_date) {
 }
 
 // get wems
-if (up_to_date) {
+if (!up_to_date) {
 	process.chdir(".\\bin\\bnk-extract")
+	console.log("extracting wems to ./wwiser/txtp/wem via bnk-extract")
 	const wwiser = ".\\..\\wwiser"
 	const mediafiles = `${wwiser}\\wwisemediafiles`
 
@@ -322,21 +323,29 @@ if (up_to_date) {
 		])
 
 	process.chdir(".\\..\\..")
+} else {
+	console.log("up to date; skipping wem extraction")
 }
 
-// if (up_to_date) {
-// 	process.chdir(".\\bin\\vgmstream")
-// 	const eventstrings = fs.readFileSync(".\\..\\wwiser\\wwnames.txt", { encoding: "ascii" }).split("\n")
+if (up_to_date) {
+	process.chdir(".\\bin\\vgmstream")
+	const eventstrings = fs.readFileSync(".\\..\\wwiser\\wwnames.txt", { encoding: "ascii" }).split("\n")
 
-// 	if (!fs.existsSync(".\\txtp"))
-// 		fs.mkdirSync(".\\txtp")
+	// eventstrings.map(event => {
+	// fs.renameSync(`.\\..\\wwiser\\txtp\\${event}`, `.\\txtp\\${event}`)
+	// })
+	// vgmstream-cli.exe -T "X:\GitHub\league-sound-browser\emote_compiler\bin\wwiser\txtp\Play_sfx_Emotes_Nice.txtp"
+	const wavified = await Promise.all(eventstrings.map(async event => {
+		spawn_promise("vgmstream-cli.exe", [`.\\..\\wwiser\\txtp\\${event}.txtp`])
+		const wav = `.\\..\\wwiser\\txtp\\${event}.txtp.wav`
+		if (fs.existsSync(wav))
+			return wav
+	}))
+	console.log(wavified)
 
-// 	eventstrings.map(event => {
-// 		fs.renameSync(`.\\..\\wwiser\\txtp\\${event}`, `.\\txtp\\${event}`)
-// 	})
 
-// 	process.chdir(".\\..\\..")
-// }
+	process.chdir(".\\..\\..")
+}
 /**
  * wwiser.pyz -g misc_emotes_sfx_audio.bnk misc_emotes_sfx_events.bnk
 
