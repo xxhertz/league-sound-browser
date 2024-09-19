@@ -24,3 +24,5 @@ reference shop.png
 /static/emotes
 /emote_compiler/bin/ritobin/summoneremotes
 /emote_compiler/bin/wad-extract/exported/loadouts
+/emote_compiler/bin/wwiser/txtp
+emote_compiler/bin/wwiser/wwiser.ini

@@ -23,7 +23,7 @@ process.chdir("./emote_compiler")
 // Common.wad.client/assets/sounds/wwise2016/sfx/shared/misc_emotes_sfx_audio.bnk
 // Common.wad.client/assets/sounds/wwise2016/sfx/shared/misc_emotes_sfx_events.bnk
 
-
+// C:\Users\classic\Downloads\obsidian\extracted\wwz\assets\sounds\wwise2016\sfx\shared
 
 
 // locate league of legends (hardcoded cba)
@@ -54,7 +54,7 @@ if (!up_to_date) {
 	console.log("reading hashlist from bin/wad-extract/hashes.game.txt")
 	const hashlist = fs.readFileSync(".\\bin\\wad-extract\\hashes.game.txt", { encoding: "ascii" }).split("\n")
 	console.log("filtering hashlist & overwriting file") // the space in " loadouts/summoneremotes" is INTENTIONAL
-	fs.writeFileSync(".\\bin\\wad-extract\\hashes.game.txt", hashlist.filter(v => includesOneOf(v, [" loadouts/summoneremotes", "misc_emotes_sfx_audio.bnk", "misc_emotes_sfx_events.bnk"])).join("\n"))
+	fs.writeFileSync(".\\bin\\wad-extract\\hashes.game.txt", hashlist.filter(v => includesOneOf(v, [" loadouts/summoneremotes", "misc_emotes_sfx_audio.bnk", "misc_emotes_sfx_events.bnk", "misc_emotes_vo_audio.wpk", "misc_emotes_sfx_audio.wpk"])).join("\n"))
 } else {
 	console.log("up to date; skipping hashlist skimming")
 }
