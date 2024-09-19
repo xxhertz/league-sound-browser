@@ -1,7 +1,15 @@
 import http from "https"
 import fs from "fs"
 import { spawn } from "child_process"
+import hash from "fnv-plus"
 process.chdir("./emote_compiler")
+const a = (audio: string) => [audio + "_audio.bnk", audio + "_audio.wpk", audio + "_events.bnk"]
+const REQUIREDHASHES = [" loadouts/summoneremotes", ...a("misc_emotes_sfx"), ...a("misc_emotes_vo")]
+const hashstr = (str: string) => Number(hash.hash(str.toLowerCase()).dec())
+const SOUNDONCREATEDEFAULT = hashstr("SoundOnCreateDefault")
+const SOUNDPERSISTENTDEFAULT = hashstr("SoundPersistentDefault")
+const VFXSYSTEM = hashstr("VfxSystem")
+
 // locate league of legends directory (or hardcode)
 // download https://raw.communitydragon.org/data/hashes/lol/hashes.game.txt to ./bin
 // clean up hash list to only contain lines containing "summoneremotes" and "misc_emotes_sfx_audio.bnk" and "misc_emotes_sfx_events.bnk"
@@ -62,7 +70,7 @@ if (!up_to_date && !test.skip_hash_filter) {
 	console.log("reading hashlist from bin/wad-extract/hashes.game.txt")
 	const hashlist = fs.readFileSync(".\\bin\\wad-extract\\hashes.game.txt", { encoding: "ascii" }).split("\n")
 	console.log("filtering hashlist & overwriting file") // the space in " loadouts/summoneremotes" is INTENTIONAL
-	fs.writeFileSync(".\\bin\\wad-extract\\hashes.game.txt", hashlist.filter(v => includesOneOf(v, [" loadouts/summoneremotes", "misc_emotes_sfx_audio.bnk", "misc_emotes_sfx_events.bnk", "en_us/shared/misc_emotes_vo_audio.wpk", "en_us/shared/misc_emotes_sfx_audio.wpk"])).join("\n"))
+	fs.writeFileSync(".\\bin\\wad-extract\\hashes.game.txt", hashlist.filter(v => includesOneOf(v, REQUIREDHASHES)).join("\n"))
 } else {
 	console.log("up to date; skipping hashlist skimming")
 }
@@ -158,10 +166,10 @@ if (!up_to_date) {
 	const hashlist = summoneremotes.entries.value.items.map(item => {
 		const hash = item.value.items.reduce((p, c) => {
 			// messy but it satisfies typescript and works as intended idc
-			if (p.key === 719095870 && p.type == "hash")
+			if (p.key === VFXSYSTEM && p.type == "hash")
 				return p
 
-			if (c.key === 719095870 && c.type == "hash")
+			if (c.key === VFXSYSTEM && c.type == "hash")
 				p = c
 
 			return p
@@ -184,7 +192,7 @@ if (!up_to_date) {
 	})
 	console.log(`moved ${relocation_count} files`)
 	console.log("deleting unused exported files")
-	fs.rmSync(loadouts, { "recursive": true, "force": true })
+	fs.rmSync(`${loadouts}\\..`, { "recursive": true, "force": true })
 
 	console.log(`dumping ${relocation_count} files via ritobin`)
 	await spawn_promise("ritobin_cli.exe", [".\\tobedumped", "-r", "-k", "-i bin", "-o json"])
@@ -197,7 +205,7 @@ if (!up_to_date) {
 
 
 // get key 3770906030 ("soundOnCreateDefault") or key 1516925922 ("SoundPersistentDefault") from each bin file if it exists
-if (up_to_date) {
+if (!up_to_date) {
 	process.chdir(".\\bin\\ritobin")
 	console.log("getting json files")
 	const jsonfiles = fs.readdirSync(".\\tobedumped").filter(str => str.endsWith(".json"))
@@ -209,14 +217,14 @@ if (up_to_date) {
 		const itemlist = file?.entries?.value?.items?.[0]?.value?.items
 		if (itemlist instanceof Array) {
 			const eventString = itemlist.reduce((p, c) => {
-				if (p?.key === 1516925922) // SoundPersistentDefault
+				if (p?.key === SOUNDPERSISTENTDEFAULT) // SoundPersistentDefault
 					return p
-				if (p?.key === 3770906030) // soundOnCreateDefault
+				if (p?.key === SOUNDONCREATEDEFAULT) // soundOnCreateDefault
 					return p
 
-				if (c?.key === 1516925922) // SoundPersistentDefault
+				if (c?.key === SOUNDPERSISTENTDEFAULT) // SoundPersistentDefault
 					p = c
-				if (c?.key === 3770906030) // soundOnCreateDefault
+				if (c?.key === SOUNDONCREATEDEFAULT) // soundOnCreateDefault
 					p = c
 
 				return c
@@ -230,8 +238,42 @@ if (up_to_date) {
 	console.log(`writing ${eventstrings.length} event strings to ./bin/wwiser/wwnames.txt`)
 	fs.writeFileSync(".\\..\\wwiser\\wwnames.txt", eventstrings.join("\n"))
 	process.chdir(".\\..\\..")
+} else {
+	console.log("up to date; skipping event name extraction")
 }
 
+// maybe optional, theory stands that .wem files are named after the event name hashed, i just don't know what seed riot uses rn and i can't understand the repos that do it
+// boofsauce
+// extract Common.en_US.wad.client
+// extract Common.wad.client
+if (up_to_date) {
+	process.chdir(".\\bin\\wad-extract")
+	const commondir = wad_dir + "\\Maps\\Shipping"
+
+	console.log("extracting Common.en_US.wad.client")
+	await spawn_promise("wad-extract.exe", [`${commondir}\\Common.en_US.wad.client`, ".\\Common_en_US"])
+	console.log("extracted Common.en_US.wad.client")
+	console.log("extracting Common.wad.client")
+	await spawn_promise("wad-extract.exe", [`${commondir}\\Common.wad.client`, ".\\Common"])
+	console.log("extracted Common.wad.client")
+
+	console.log(`moving crucial files to bnk-extract [${REQUIREDHASHES.join(", ")}]`)
+	const commonshared = ".\\Common\\assets\\sounds\\wwise2016\\sfx\\shared"
+	fs.readdirSync(commonshared).map(file => fs.renameSync(`${commonshared}\\${file}`, `.\\..\\bnk-extract\\${file}`))
+	const commonvo = ".\\Common_en_US\\assets\\sounds\\wwise2016\\vo\\en_us\\shared"
+	fs.readdirSync(commonvo).map(file => fs.renameSync(`${commonvo}\\${file}`, `.\\..\\bnk-extract\\${file}`))
+
+	console.log("all moved; cleaning up")
+	fs.rmSync(".\\Common", { recursive: true, force: true })
+	fs.rmSync(".\\Common_en_US", { recursive: true, force: true })
+
+	process.chdir(".\\..\\..")
+} else {
+	console.log("up to date; skipping extraction of Common.wad")
+}
+
+
+// extract misc_emotes_sfx_audio & misc_emotes_sfx_events.bnk
 // use wwiser with the following command wwiser.pyz -g misc_emotes_sfx_audio.bnk misc_emotes_sfx_events.bnk
 /**
  * wwiser.pyz -g misc_emotes_sfx_audio.bnk misc_emotes_sfx_events.bnk

@@ -29,3 +29,6 @@ emote_compiler/bin/wwiser/wwiser.ini
 /emote_compiler/bin/wad-extract/Global
 /emote_compiler/bin/bnk-extract/summoneremotes
 /emote_compiler/bin/ritobin/tobedumped
+/emote_compiler/bin/wad-extract/Common
+/emote_compiler/bin/wad-extract/Common_en_US
+/emote_compiler/bin/bnk-extract/output
