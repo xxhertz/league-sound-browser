@@ -21,3 +21,4 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 /storepage
 reference shop.png
+/static/emotes
