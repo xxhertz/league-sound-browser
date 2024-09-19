@@ -1,5 +1,5 @@
 // this is seriously bad code but it works and was done in under 48h
-// intention: generate JSON list of summoneremote ID (from api) -> emote PNG
+// intention: generate JSON list of summoneremote ID (from api) -> emote PNG & MP3
 
 import http from "https"
 import fs from "fs"
