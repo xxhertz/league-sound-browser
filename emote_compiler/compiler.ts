@@ -1,9 +1,13 @@
+// this is seriously bad code but it works and was done in under 48h
+// intention: generate JSON list of summoneremote ID (from api) -> emote PNG
+
 import http from "https"
 import fs from "fs"
 import { spawn } from "child_process"
 import hash from "fnv-plus"
 process.chdir("./emote_compiler")
 const a = (audio: string) => [audio + "_audio.bnk", audio + "_audio.wpk", audio + "_events.bnk"]
+// the space in " loadouts/summoneremotes" is INTENTIONAL
 const REQUIREDHASHES = [" loadouts/summoneremotes", ...a("misc_emotes_sfx"), ...a("misc_emotes_vo")]
 const hashstr = (str: string) => Number(hash.hash(str.toLowerCase()).dec())
 const SOUNDONCREATEDEFAULT = hashstr("SoundOnCreateDefault")
@@ -24,7 +28,7 @@ const VFXSYSTEM = hashstr("VfxSystem")
 // extract Common.wad.client
 // extract misc_emotes_sfx_audio & misc_emotes_sfx_events.bnk
 // use wwiser with the following command wwiser.pyz -g misc_emotes_sfx_audio.bnk misc_emotes_sfx_events.bnk
-
+// use vgmstream with the following command vgmstream-cli.exe -T "X:\GitHub\league-sound-browser\emote_compiler\bin\wwiser\txtp\Play_sfx_Emotes_Nice.txtp"
 
 // Common.en_US.wad.client/assets/sounds/wwise2016/vo/en_us/shared/misc_emotes_vo_audio.wpk
 // Common.wad.client/assets/sounds/wwise2016/sfx/shared/misc_emotes_sfx_audio.wpk
@@ -69,7 +73,7 @@ const includesOneOf = (string: string, strings: string[]) => strings.reduce((p, 
 if (!up_to_date && !test.skip_hash_filter) {
 	console.log("reading hashlist from bin/wad-extract/hashes.game.txt")
 	const hashlist = fs.readFileSync(".\\bin\\wad-extract\\hashes.game.txt", { encoding: "ascii" }).split("\n")
-	console.log("filtering hashlist & overwriting file") // the space in " loadouts/summoneremotes" is INTENTIONAL
+	console.log("filtering hashlist & overwriting file")
 	fs.writeFileSync(".\\bin\\wad-extract\\hashes.game.txt", hashlist.filter(v => includesOneOf(v, REQUIREDHASHES)).join("\n"))
 } else {
 	console.log("up to date; skipping hashlist skimming")
@@ -237,6 +241,8 @@ if (!up_to_date) {
 	// create file with all keys (soundOnCreateDefault / SoundPersistentDefault) called wwnames.txt
 	console.log(`writing ${eventstrings.length} event strings to ./bin/wwiser/wwnames.txt`)
 	fs.writeFileSync(".\\..\\wwiser\\wwnames.txt", eventstrings.join("\n"))
+	console.log("wrote event strings; cleaning up")
+	fs.rmSync(".\\tobedumped", { recursive: true, force: true })
 	process.chdir(".\\..\\..")
 } else {
 	console.log("up to date; skipping event name extraction")
@@ -246,7 +252,7 @@ if (!up_to_date) {
 // boofsauce
 // extract Common.en_US.wad.client
 // extract Common.wad.client
-if (up_to_date) {
+if (!up_to_date) {
 	process.chdir(".\\bin\\wad-extract")
 	const commondir = wad_dir + "\\Maps\\Shipping"
 
@@ -257,13 +263,18 @@ if (up_to_date) {
 	await spawn_promise("wad-extract.exe", [`${commondir}\\Common.wad.client`, ".\\Common"])
 	console.log("extracted Common.wad.client")
 
-	console.log(`moving crucial files to bnk-extract [${REQUIREDHASHES.join(", ")}]`)
+	console.log(`moving crucial files to wwiser [${REQUIREDHASHES.join(", ")}]`)
+
+	if (!fs.existsSync(".\\..\\wwiser\\wwisemediafiles"))
+		fs.mkdirSync(".\\..\\wwiser\\wwisemediafiles")
+
 	const commonshared = ".\\Common\\assets\\sounds\\wwise2016\\sfx\\shared"
-	fs.readdirSync(commonshared).map(file => fs.renameSync(`${commonshared}\\${file}`, `.\\..\\bnk-extract\\${file}`))
+	fs.readdirSync(commonshared).map(file => fs.renameSync(`${commonshared}\\${file}`, `.\\..\\wwiser\\wwisemediafiles\\${file}`))
 	const commonvo = ".\\Common_en_US\\assets\\sounds\\wwise2016\\vo\\en_us\\shared"
-	fs.readdirSync(commonvo).map(file => fs.renameSync(`${commonvo}\\${file}`, `.\\..\\bnk-extract\\${file}`))
+	fs.readdirSync(commonvo).map(file => fs.renameSync(`${commonvo}\\${file}`, `.\\..\\wwiser\\wwisemediafiles\\${file}`))
 
 	console.log("all moved; cleaning up")
+
 	fs.rmSync(".\\Common", { recursive: true, force: true })
 	fs.rmSync(".\\Common_en_US", { recursive: true, force: true })
 
@@ -272,16 +283,19 @@ if (up_to_date) {
 	console.log("up to date; skipping extraction of Common.wad")
 }
 
-
-// extract misc_emotes_sfx_audio & misc_emotes_sfx_events.bnk
 // use wwiser with the following command wwiser.pyz -g misc_emotes_sfx_audio.bnk misc_emotes_sfx_events.bnk
+if (!up_to_date) {
+	process.chdir(".\\bin\\wwiser")
+	console.log("generating TXTP files via wwiser.pyz")
+	await spawn_promise("wwiser.pyz", ["-r wwisemediafiles/*", "-g"])
+
+
+} else {
+	console.log("up to date; skipping wwiser TXTP conversions")
+}
 /**
  * wwiser.pyz -g misc_emotes_sfx_audio.bnk misc_emotes_sfx_events.bnk
- * wad-extract.exe "X:\Riot Games\League of Legends (PBE)\Game\DATA\FINAL\Global.wad.client" ./Global
- * 
- * (1283).toString(16)
- * ritobin_cli.exe "X:\GitHub\league-sound-browser\emote_compiler\bin\ritobin\summoneremotes\0dbb48bf.bin" ./summoneremotes2.json -k
- * wwiser.pyz -g misc_emotes_sfx_audio.bnk misc_emotes_sfx_events.bnk
+
  * 
  * C:\Users\classic\Downloads\obsidian\extracted\wwz\z\assets\sounds\wwise2016\vo\en_us\shared
  * 
