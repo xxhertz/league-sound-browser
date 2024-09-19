@@ -22,3 +22,5 @@ vite.config.ts.timestamp-*
 /storepage
 reference shop.png
 /static/emotes
+/emote_compiler/bin/ritobin/summoneremotes
+/emote_compiler/bin/wad-extract/exported/loadouts
