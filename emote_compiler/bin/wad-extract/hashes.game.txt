@@ -1,7 +1,9 @@
 bb4eca56e6fed556 assets/sounds/wwise/sfx/shared/misc_emotes_sfx_audio.bnk
 e4d38b7bf689bd42 assets/sounds/wwise/sfx/shared/misc_emotes_sfx_events.bnk
+c4b558272920e2b5 assets/sounds/wwise/vo/en_us/shared/misc_emotes_vo_audio.wpk
 fcfe13c9f132fd4b assets/sounds/wwise2016/sfx/shared/misc_emotes_sfx_audio.bnk
 5bf51d23bfb8172b assets/sounds/wwise2016/sfx/shared/misc_emotes_sfx_events.bnk
+7b5af1df12400018 assets/sounds/wwise2016/vo/en_us/shared/misc_emotes_vo_audio.wpk
 f8ed8b424917d8f6 loadouts/summoneremotes
 dfba5ff4daa07695 loadouts/summoneremotes.002e5ad5.bin
 108dd8c0c43695a5 loadouts/summoneremotes.004b344e.bin
