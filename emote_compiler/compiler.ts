@@ -13,7 +13,7 @@ const REQUIREDHASHES = [" loadouts/summoneremotes", ...a("misc_emotes_sfx"), ...
 const SOUNDONCREATEDEFAULT = 3770906030// hashstr("SoundOnCreateDefault")
 const SOUNDPERSISTENTDEFAULT = 1516925922// hashstr("SoundPersistentDefault")
 const VFXSYSTEM = 719095870// hashstr("VfxSystem")
-
+const SUMMONEREMOTEID = 2956205910 //hashstr("SummonerEmoteID")
 // locate league of legends directory (or hardcode)
 // download https://raw.communitydragon.org/data/hashes/lol/hashes.game.txt to ./bin
 // clean up hash list to only contain lines containing "summoneremotes" and "misc_emotes_sfx_audio.bnk" and "misc_emotes_sfx_events.bnk"
@@ -51,11 +51,11 @@ const wad_dir = "C:\\Riot Games\\League of Legends\\Game\\DATA\\FINAL"
 
 // download https://raw.communitydragon.org/data/hashes/lol/hashes.game.txt to ./bin
 const download = async (url: string, filename: string) => new Promise(r => http.get(url, res => res.pipe(fs.createWriteStream(filename).on("close", r))))
-const get = async (url: string) => fetch(url).then(res => res.text())
+const get = async (url: string) => fetch(url)
 
 // check version to prevent the 30 second download time
 console.log("checking patch version")
-const latest_ver = (await get("https://raw.communitydragon.org/status.live.txt")).substring(0, 10)
+const latest_ver = (await get("https://raw.communitydragon.org/status.live.txt").then(r => r.text())).substring(0, 10)
 if (!fs.existsSync("patch_version.txt"))
 	fs.writeFileSync("patch_version.txt", latest_ver)
 console.log(latest_ver)
@@ -84,11 +84,11 @@ const spawn_promise = async (process: string, args: string[]) => new Promise(r =
 // unpack via wad-extract.exe league_dir\Game\DATA\FINAL\Global.wad.client" ./Global
 if (!up_to_date) {
 	process.chdir("./bin/wad-extract")
-	if (fs.existsSync(".\\global"))
-		fs.rmSync(".\\global", { recursive: true, force: true })
+	// if (fs.existsSync(".\\global"))
+	// fs.rmSync(".\\global", { recursive: true, force: true })
 
-	if (fs.existsSync(".\\exported"))
-		fs.rmSync(".\\exported", { recursive: true, force: true })
+	// if (fs.existsSync(".\\exported"))
+	// fs.rmSync(".\\exported", { recursive: true, force: true })
 
 	console.log("extracting emote WAD contents")
 	await spawn_promise("wad-extract.exe", [`${wad_dir}\\Global.wad.client`, "./global"])
@@ -100,7 +100,7 @@ if (!up_to_date) {
 	fs.renameSync(".\\global\\loadouts", ".\\exported\\loadouts")
 	// delete extracted wad ./Global
 	console.log("deleting excess files")
-	fs.rmSync(".\\global", { recursive: true, force: true })
+	// fs.rmSync(".\\global", { recursive: true, force: true })
 	process.chdir(".\\..\\..")
 } else {
 	console.log("up to date; skipping wad extraction")
@@ -158,7 +158,7 @@ type SummonerEmotesUnhashed = {
 	version: TV<"u32", 3>
 }
 
-if (!up_to_date) {
+if (up_to_date) {
 	// extract summoneremotes as json
 	process.chdir(".\\bin\\ritobin")
 	const loadouts = "..\\wad-extract\\exported\\loadouts"
@@ -167,20 +167,48 @@ if (!up_to_date) {
 	await spawn_promise("ritobin_cli.exe", [summoneremoteslocation, ".\\summoneremotes.json", "-k"])
 	const summoneremotes: SummonerEmotesUnhashed = JSON.parse(fs.readFileSync(".\\summoneremotes.json", { encoding: "ascii" }))
 	// get item with key 719095870 and type "hash" and get value (gets each referenced bin file's filename component/hash)
-	const hashlist = summoneremotes.entries.value.items.map(item => {
+	const emotehashmap = summoneremotes.entries.value.items.map(item => {
 		const hash = item.value.items.reduce((p, c) => {
 			// messy but it satisfies typescript and works as intended idc
-			if (p.key === VFXSYSTEM && p.type == "hash")
+			if (p.key === VFXSYSTEM && p.type === "hash")
 				return p
 
-			if (c.key === VFXSYSTEM && c.type == "hash")
+			if (c.key === VFXSYSTEM && c.type === "hash")
 				p = c
 
 			return p
 		}).value
 
-		return hash.toString(16).padStart(8, "0")
+		const emoteID = item.value.items.reduce((p, c) => {
+			if (p.key === SUMMONEREMOTEID && p.type === "u32")
+				return p
+
+			if (c.key === SUMMONEREMOTEID && c.type === "u32")
+				p = c
+
+			return p
+		}).value
+		return {
+			hash: hash.toString(16).padStart(8, "0"),
+			emote: emoteID.toString()
+		}
 	})
+
+	console.log(emotehashmap)
+
+	const emotelist = await get("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/summoner-emotes.json").then(res => res.json())
+	const all_emote_ids: string[] = emotelist.map(emote => emote.id.toString())
+	console.log(all_emote_ids)
+	const emotehashmap_clean = emotehashmap.reduce<{ [emoteID: string]: { hash: string } }>((p, c) => {
+		if (all_emote_ids.includes(c.emote))
+			p[c.emote] = { hash: c.hash }
+		return p
+	}, {})
+	console.log(`writing emotehashmap.json in ./emote_compiler`)
+	fs.writeFileSync(".\\..\\..\\emotehashmap.json", JSON.stringify(emotehashmap_clean))
+	const hashlist = Object.values(emotehashmap_clean).map(v => v.hash)
+	// const idlist = emotehashmap.map(t => t.emote)
+
 	console.log(`found ${hashlist.length} valid hashes`)
 
 	console.log("moving summoneremote bin files to ./tobedumped/xxxxxxxx.bin")
@@ -196,7 +224,7 @@ if (!up_to_date) {
 	})
 	console.log(`moved ${relocation_count} files`)
 	console.log("deleting unused exported files")
-	fs.rmSync(`${loadouts}`, { recursive: true, force: true })
+	// fs.rmSync(`${loadouts}`, { recursive: true, force: true })
 
 	console.log(`dumping ${relocation_count} files via ritobin`)
 	await spawn_promise("ritobin_cli.exe", [".\\tobedumped", "-r", "-k", "-i bin", "-o json"])
@@ -209,15 +237,19 @@ if (!up_to_date) {
 
 
 // get key 3770906030 ("soundOnCreateDefault") or key 1516925922 ("SoundPersistentDefault") from each bin file if it exists
-if (!up_to_date) {
+if (up_to_date) {
 	process.chdir(".\\bin\\ritobin")
 	console.log("getting json files")
 	const jsonfiles = fs.readdirSync(".\\tobedumped").filter(str => str.endsWith(".json"))
 	console.log(jsonfiles)
 	console.log(`got ${jsonfiles.length} converted files`)
-	const filesdata = jsonfiles.map(filename => JSON.parse(fs.readFileSync(`.\\tobedumped\\${filename}`, { encoding: "ascii" })))
+	const filesdata = jsonfiles.map(filename => ({ name: filename, data: JSON.parse(fs.readFileSync(`.\\tobedumped\\${filename}`, { encoding: "ascii" })) }))
+
+
 	console.log(`sifting files to only contain values "soundOnCreateDefault" / "SoundPersistentDefault"`)
-	const eventstrings = filesdata.map(file => {
+	const eventstringz = filesdata.map(filedata => {
+		const file = filedata.data
+		const name = filedata.name.substring(0, filedata.name.length - ".json".length)
 		// not making a type for this i cant be fucked
 		const itemlist = file?.entries?.value?.items?.[0]?.value?.items
 		if (itemlist instanceof Array) {
@@ -236,9 +268,17 @@ if (!up_to_date) {
 			})?.value
 
 			if (eventString !== 1)
-				return eventString
+				return { eventString, name }
 		}
 	}).filter(v => v !== undefined)
+	console.log(eventstringz)
+	console.log("saving ./emote_compiler/eventhashmap.json")
+	const eventhashmap = eventstringz.reduce<{ [hash: string]: string }>((p, c) => {
+		p[c.name] = c.eventString
+		return p
+	}, {})
+	fs.writeFileSync(".\\..\\..\\eventhashmap.json", JSON.stringify(eventhashmap))
+	const eventstrings = eventstringz.map(e => e.eventString)
 	// create file with all keys (soundOnCreateDefault / SoundPersistentDefault) called wwnames.txt
 	console.log(`writing ${eventstrings.length} event strings to ./bin/wwiser/wwnames.txt`)
 	fs.writeFileSync(".\\..\\wwiser\\wwnames.txt", eventstrings.join("\n"))
@@ -276,8 +316,8 @@ if (!up_to_date) {
 
 	console.log("all moved; cleaning up")
 
-	fs.rmSync(".\\Common", { recursive: true, force: true })
-	fs.rmSync(".\\Common_en_US", { recursive: true, force: true })
+	// fs.rmSync(".\\Common", { recursive: true, force: true })
+	// fs.rmSync(".\\Common_en_US", { recursive: true, force: true })
 
 	process.chdir(".\\..\\..")
 } else {
