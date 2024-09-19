@@ -3,7 +3,8 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"generatestatic": "tsx ./emote_compiler/compiler.ts",
+		"fetchandparsedata": "tsx ./emote_compiler/compiler.ts",
+		"generatestatic": "tsx ./emote_compiler/finalize.ts",
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",

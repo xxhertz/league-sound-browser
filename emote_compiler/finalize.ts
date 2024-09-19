@@ -1,14 +1,14 @@
-import { existsSync } from "fs"
+import { ApiEmote } from "./shared"
 import emoteMap from "./emotehashmap.json"
 import eventMap from "./eventhashmap.json"
+import http from "https"
+import { copyFileSync, cpSync, createWriteStream, existsSync, mkdirSync, writeFileSync } from "fs"
+import { spawn } from "child_process"
+const download = async (url: string, filename: string) => new Promise(r => http.get(url, res => res.pipe(createWriteStream(filename).on("close", r))))
+const mkDirSyncIfNotExist = (foldername: string) => !existsSync(foldername) && mkdirSync(foldername)
+
 process.chdir("./emote_compiler")
 
-type ApiEmote = {
-	id: number,
-	name: string,
-	inventoryIcon: string,
-	description: string
-}
 
 const api: ApiEmote[] = await fetch("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/summoner-emotes.json").then(r => r.json())
 
@@ -36,16 +36,34 @@ function pngFromID(emoteID: string | number) {
 
 }
 
-const emotes_to_statically_generate = api.map(emote => {
+// downloaded / extracted
+mkDirSyncIfNotExist("png")
+mkDirSyncIfNotExist("wav")
+// converted by ffmpeg
+mkDirSyncIfNotExist("finalized")
+
+api.map(async emote => {
 	const png = pngFromID(emote.id)
 	const wav = wavFromID(emote.id)
 
-	return {
-		hasSFX: wav !== undefined,
-		// sfx:
+	if (wav && !existsSync(`./finalized/${emote.id}.ogg`)) {
+		copyFileSync(wav, `./wav/${emote.id}.wav`)
+		spawn("./bin/ffmpeg.exe", ["-i", `./wav/${emote.id}.wav`, `./finalized/${emote.id}.ogg`])
 	}
+	if (png && !existsSync(`./finalized/${emote.id}.webp`)) {
+		await download(png, `./png/${emote.id}.png`)
+		spawn("./bin/ffmpeg.exe", ["-i", `./png/${emote.id}.png`, `./finalized/${emote.id}.webp`])
+	}
+
+	if (!existsSync(`./finalized/${emote.id}.json`))
+		writeFileSync(`./finalized/${emote.id}.json`, JSON.stringify({
+			...emote,
+			hasOgg: wav !== undefined,
+			hasWebp: png !== undefined
+		}))
 })
 
-console.log(pngFromID(4668))
-console.log(wavFromID(4668))
-console.log(emotes_to_statically_generate)
+writeFileSync("./finalized/api.json", JSON.stringify(api))
+
+mkDirSyncIfNotExist("../static/finalized")
+cpSync("./finalized", "../static/finalized", { recursive: true })

@@ -158,7 +158,7 @@ type SummonerEmotesUnhashed = {
 	version: TV<"u32", 3>
 }
 
-if (up_to_date) {
+if (!up_to_date) {
 	// extract summoneremotes as json
 	process.chdir(".\\bin\\ritobin")
 	const loadouts = "..\\wad-extract\\exported\\loadouts"
@@ -237,7 +237,7 @@ if (up_to_date) {
 
 
 // get key 3770906030 ("soundOnCreateDefault") or key 1516925922 ("SoundPersistentDefault") from each bin file if it exists
-if (up_to_date) {
+if (!up_to_date) {
 	process.chdir(".\\bin\\ritobin")
 	console.log("getting json files")
 	const jsonfiles = fs.readdirSync(".\\tobedumped").filter(str => str.endsWith(".json"))
