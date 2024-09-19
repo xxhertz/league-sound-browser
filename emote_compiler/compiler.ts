@@ -4,15 +4,15 @@
 import http from "https"
 import fs from "fs"
 import { spawn } from "child_process"
-import hash from "fnv-plus"
+// import hash from "fnv-plus"
 process.chdir("./emote_compiler")
 const a = (audio: string) => [audio + "_audio.bnk", audio + "_audio.wpk", audio + "_events.bnk"]
 // the space in " loadouts/summoneremotes" is INTENTIONAL
 const REQUIREDHASHES = [" loadouts/summoneremotes", ...a("misc_emotes_sfx"), ...a("misc_emotes_vo")]
-const hashstr = (str: string) => Number(hash.hash(str.toLowerCase()).dec())
-const SOUNDONCREATEDEFAULT = hashstr("SoundOnCreateDefault")
-const SOUNDPERSISTENTDEFAULT = hashstr("SoundPersistentDefault")
-const VFXSYSTEM = hashstr("VfxSystem")
+// const hashstr = (str: string) => Number(hash.hash(str.toLowerCase()).dec())
+const SOUNDONCREATEDEFAULT = 3770906030// hashstr("SoundOnCreateDefault")
+const SOUNDPERSISTENTDEFAULT = 1516925922// hashstr("SoundPersistentDefault")
+const VFXSYSTEM = 719095870// hashstr("VfxSystem")
 
 // locate league of legends directory (or hardcode)
 // download https://raw.communitydragon.org/data/hashes/lol/hashes.game.txt to ./bin
@@ -42,8 +42,8 @@ const VFXSYSTEM = hashstr("VfxSystem")
 // C:\Users\classic\Downloads\obsidian\extracted\wwz\assets\sounds\wwise2016\sfx\shared
 
 const test = {
-	skip_hash_download: false,
-	skip_hash_filter: false,
+	skip_hash_download: true,
+	skip_hash_filter: true,
 }
 
 // locate league of legends (hardcoded cba)
@@ -84,23 +84,23 @@ const spawn_promise = async (process: string, args: string[]) => new Promise(r =
 // unpack via wad-extract.exe league_dir\Game\DATA\FINAL\Global.wad.client" ./Global
 if (!up_to_date) {
 	process.chdir("./bin/wad-extract")
-	if (fs.existsSync(".\\Global"))
-		fs.rmSync(".\\Global", { recursive: true, force: true })
+	if (fs.existsSync(".\\global"))
+		fs.rmSync(".\\global", { recursive: true, force: true })
 
 	if (fs.existsSync(".\\exported"))
 		fs.rmSync(".\\exported", { recursive: true, force: true })
 
 	console.log("extracting emote WAD contents")
-	await spawn_promise("wad-extract.exe", [`${wad_dir}\\Global.wad.client`, ".\\Global"])
+	await spawn_promise("wad-extract.exe", [`${wad_dir}\\Global.wad.client`, "./global"])
 	console.log("extracted, performing cleanup")
 	// move summoneremotes.xxxxxxxx.bin to new folder
 	if (!fs.existsSync(".\\exported"))
 		fs.mkdirSync(".\\exported")
 
-	fs.renameSync(".\\Global\\loadouts", ".\\exported\\loadouts")
+	fs.renameSync(".\\global\\loadouts", ".\\exported\\loadouts")
 	// delete extracted wad ./Global
 	console.log("deleting excess files")
-	fs.rmSync(".\\Global", { recursive: true, force: true })
+	fs.rmSync(".\\global", { recursive: true, force: true })
 	process.chdir(".\\..\\..")
 } else {
 	console.log("up to date; skipping wad extraction")
@@ -196,7 +196,7 @@ if (!up_to_date) {
 	})
 	console.log(`moved ${relocation_count} files`)
 	console.log("deleting unused exported files")
-	fs.rmSync(`${loadouts}\\..`, { "recursive": true, "force": true })
+	fs.rmSync(`${loadouts}`, { recursive: true, force: true })
 
 	console.log(`dumping ${relocation_count} files via ritobin`)
 	await spawn_promise("ritobin_cli.exe", [".\\tobedumped", "-r", "-k", "-i bin", "-o json"])
@@ -213,6 +213,7 @@ if (!up_to_date) {
 	process.chdir(".\\bin\\ritobin")
 	console.log("getting json files")
 	const jsonfiles = fs.readdirSync(".\\tobedumped").filter(str => str.endsWith(".json"))
+	console.log(jsonfiles)
 	console.log(`got ${jsonfiles.length} converted files`)
 	const filesdata = jsonfiles.map(filename => JSON.parse(fs.readFileSync(`.\\tobedumped\\${filename}`, { encoding: "ascii" })))
 	console.log(`sifting files to only contain values "soundOnCreateDefault" / "SoundPersistentDefault"`)
@@ -242,7 +243,7 @@ if (!up_to_date) {
 	console.log(`writing ${eventstrings.length} event strings to ./bin/wwiser/wwnames.txt`)
 	fs.writeFileSync(".\\..\\wwiser\\wwnames.txt", eventstrings.join("\n"))
 	console.log("wrote event strings; cleaning up")
-	fs.rmSync(".\\tobedumped", { recursive: true, force: true })
+	// fs.rmSync(".\\tobedumped", { recursive: true, force: true })
 	process.chdir(".\\..\\..")
 } else {
 	console.log("up to date; skipping event name extraction")
@@ -287,12 +288,55 @@ if (!up_to_date) {
 if (!up_to_date) {
 	process.chdir(".\\bin\\wwiser")
 	console.log("generating TXTP files via wwiser.pyz")
-	await spawn_promise("wwiser.pyz", ["-r wwisemediafiles/*", "-g"])
-
-
+	await spawn_promise("py", ["wwiser.pyz", "-r", "wwisemediafiles/*", "-g"])
+	process.chdir(".\\..\\..")
 } else {
 	console.log("up to date; skipping wwiser TXTP conversions")
 }
+
+// get wems
+if (up_to_date) {
+	process.chdir(".\\bin\\bnk-extract")
+	const wwiser = ".\\..\\wwiser"
+	const mediafiles = `${wwiser}\\wwisemediafiles`
+
+	const files = [
+		{
+			audio: "misc_emotes_vo_audio.wpk",
+			events: "misc_emotes_vo_events.bnk"
+		},
+		{
+			audio: "misc_emotes_sfx_audio.wpk",
+			events: "misc_emotes_sfx_events.bnk"
+		}
+	]
+	//bnk-extract.exe -a .\..\wwiser\wwisemediafiles\misc_emotes_sfx_audio.wpk -b .\..\wwiser\wwnames.txt -e .\..\wwiser\wwisemediafiles\misc_emotes_sfx_events.bnk -o .\..\wwiser\txtp\wem --wems-only
+
+	for (const file of files)
+		await spawn_promise("bnk-extract", [
+			`-a`, `${mediafiles}\\${file.audio}`,
+			`-b`, `${wwiser}\\wwnames.txt`,
+			`-e`, `${mediafiles}\\${file.events}`,
+			`-o`, `${wwiser}\\txtp\\wem`,
+			`--wems-only`
+		])
+
+	process.chdir(".\\..\\..")
+}
+
+// if (up_to_date) {
+// 	process.chdir(".\\bin\\vgmstream")
+// 	const eventstrings = fs.readFileSync(".\\..\\wwiser\\wwnames.txt", { encoding: "ascii" }).split("\n")
+
+// 	if (!fs.existsSync(".\\txtp"))
+// 		fs.mkdirSync(".\\txtp")
+
+// 	eventstrings.map(event => {
+// 		fs.renameSync(`.\\..\\wwiser\\txtp\\${event}`, `.\\txtp\\${event}`)
+// 	})
+
+// 	process.chdir(".\\..\\..")
+// }
 /**
  * wwiser.pyz -g misc_emotes_sfx_audio.bnk misc_emotes_sfx_events.bnk
 
