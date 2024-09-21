@@ -55,12 +55,13 @@ api.map(async emote => {
 		spawn("./bin/ffmpeg.exe", ["-i", `./png/${emote.id}.png`, `./finalized/${emote.id}.webp`])
 	}
 
-	if (!existsSync(`./finalized/${emote.id}.json`))
-		writeFileSync(`./finalized/${emote.id}.json`, JSON.stringify({
-			...emote,
-			hasOgg: wav !== undefined,
-			hasWebp: png !== undefined
-		}))
+	// tbh useless just check during buildstep it's faster than reading all these json files anyways
+	// if (!existsSync(`./finalized/${emote.id}.json`))
+	// writeFileSync(`./finalized/${emote.id}.json`, JSON.stringify({
+	// ...emote,
+	// hasOgg: wav !== undefined,
+	// hasWebp: png !== undefined
+	// }))
 })
 
 writeFileSync("./finalized/api.json", JSON.stringify(api))
