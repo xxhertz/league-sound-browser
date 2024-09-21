@@ -4,7 +4,7 @@
 	import Emote from "./components/Emote.svelte"
 	// import Search from "./components/Search.svelte"
 	export let data
-	const sliced = data.api.slice(0, 48)
+	const sliced = data.api.slice(0, 48) // comment this in prod, just for fast refresh times
 	onMount(() => {
 		let images: NodeListOf<HTMLImageElement> = document.querySelectorAll("img.lazy")
 
