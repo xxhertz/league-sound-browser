@@ -4,9 +4,9 @@
 	import Emote from "./components/Emote.svelte"
 	// import Search from "./components/Search.svelte"
 	export let data
+	const sliced = data.api.slice(0, 48)
 	onMount(() => {
-		let images: NodeListOf<HTMLImageElement> =
-			document.querySelectorAll("img.lazy")
+		let images: NodeListOf<HTMLImageElement> = document.querySelectorAll("img.lazy")
 
 		let throttle: NodeJS.Timeout
 		const lazyload = () => {
@@ -41,7 +41,7 @@
 <main class="bg-zinc-950 w-full">
 	<!-- <Search /> -->
 	<div class="grid-flow-row grid-cols-4 grid text-center">
-		{#each data.api as emote}
+		{#each sliced as emote}
 			<Emote {emote} />
 		{/each}
 	</div>
