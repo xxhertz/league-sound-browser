@@ -1,3 +1,4 @@
+import twcss3d from "tailwindcss-3d"
 /** @type {import('tailwindcss').Config} */
 export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
@@ -12,6 +13,6 @@ export default {
 			}
 		}
 	},
-	plugins: [],
+	plugins: [twcss3d],
 }
 

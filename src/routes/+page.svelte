@@ -1,51 +1,14 @@
 <script lang="ts">
 	import "../app.css"
-	import { onMount } from "svelte"
-	import Emote from "./components/Emote.svelte"
+	import type { EmoteData } from "../../emote_compiler/shared"
+	import EmoteList from "./components/EmoteList.svelte"
 	// import Search from "./components/Search.svelte"
-	export let data
-	const sliced = data.api.slice(0, 48) // comment this in prod, just for fast refresh times
-	onMount(() => {
-		let images: NodeListOf<HTMLImageElement> = document.querySelectorAll("img.lazy")
-
-		let throttle: NodeJS.Timeout
-		const lazyload = () => {
-			if (throttle) clearTimeout(throttle)
-
-			images = document.querySelectorAll("img.lazy")
-
-			throttle = setTimeout(() => {
-				images.forEach((image) => {
-					// if bottom of the viewport is beyond the top of the image, load it
-					if (window.innerHeight + window.scrollY > image.offsetTop) {
-						if (image.dataset.src) image.src = image.dataset.src
-						image.classList.remove("lazy")
-					}
-				})
-			}, 40)
-
-			if (images.length === 0) {
-				document.removeEventListener("scroll", lazyload)
-				document.removeEventListener("resize", lazyload)
-				screen.orientation.removeEventListener("change", lazyload)
-			}
-		}
-
-		document.addEventListener("scroll", lazyload)
-		document.addEventListener("resize", lazyload)
-		screen.orientation.addEventListener("change", lazyload)
-		lazyload()
-	})
+	export let data: { api: EmoteData[] }
 </script>
 
-<main class="bg-zinc-950 w-full">
-	<!-- <Search /> -->
-	<div class="grid-flow-row grid-cols-4 grid text-center">
-		{#each sliced as emote}
-			<Emote {emote} />
-		{/each}
-	</div>
-</main>
+<div class="flex h-screen">
+	<EmoteList {data} />
+</div>
 
 <style>
 	:global(body) {
