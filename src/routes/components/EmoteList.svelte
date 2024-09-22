@@ -1,46 +1,54 @@
 <script lang="ts">
-	import { onMount } from "svelte"
+	// import { onMount } from "svelte"
 	import Emote from "./emotelist/Emote.svelte"
 	import type { EmoteData } from "../../../emote_compiler/shared"
+	import VirtualList from "@sveltejs/svelte-virtual-list/VirtualList.svelte"
 	// import Search from "./components/Search.svelte"
 	export let data: EmoteData[]
-	import { searchStore } from "$lib/stores/search"
-	onMount(() => {
-		let images: NodeListOf<HTMLImageElement> = document.querySelectorAll("img.lazy")
+	// let emotelist: HTMLElement
+	// import { searchStore } from "$lib/stores/search"
+	// onMount(() => {
+	// 	let emotecards: NodeListOf<HTMLImageElement> = document.querySelectorAll("emotecard")
 
-		let throttle: NodeJS.Timeout
-		const lazyload = () => {
-			if (throttle) clearTimeout(throttle)
+	// 	let throttle: NodeJS.Timeout
+	// 	const lazyload = () => {
+	// 		if (throttle) clearTimeout(throttle)
 
-			images = document.querySelectorAll("img.lazy")
+	// 		emotecards = document.querySelectorAll("emotecard") // document.querySelectorAll("img.lazy")
 
-			throttle = setTimeout(() => {
-				images.forEach((image) => {
-					// if bottom of the viewport is beyond the top of the image, load it
-					if (window.innerHeight + window.scrollY > image.offsetTop) if (image.dataset.src) image.src = image.dataset.src
-				})
-			}, 40)
-		}
+	// 		throttle = setTimeout(() => {
+	// 			emotecards.forEach((card) => {
+	// 				// if bottom of the viewport is beyond the top of the image, load it
 
-		const unsubscribe = searchStore.subscribe(lazyload)
+	// 				if (window.innerHeight + emotelist.scrollTop > card.offsetTop) {
+	// 					const image = card.querySelector("img")
+	// 					if (image?.dataset.src) image.src = image.dataset.src
+	// 				}
+	// 			})
+	// 		}, 40)
+	// 	}
 
-		document.addEventListener("scroll", lazyload)
-		document.addEventListener("resize", lazyload)
-		screen.orientation.addEventListener("change", lazyload)
-		lazyload()
+	// 	const unsubscribe = searchStore.subscribe(lazyload)
 
-		return () => {
-			// onDestroy
-			document.removeEventListener("scroll", lazyload)
-			document.removeEventListener("resize", lazyload)
-			screen.orientation.removeEventListener("change", lazyload)
-			unsubscribe()
-		}
-	})
+	// 	document.addEventListener("scroll", lazyload)
+	// 	document.addEventListener("resize", lazyload)
+	// 	screen.orientation.addEventListener("change", lazyload)
+	// 	lazyload()
+
+	// 	return () => {
+	// 		// onDestroy
+	// 		document.removeEventListener("scroll", lazyload)
+	// 		document.removeEventListener("resize", lazyload)
+	// 		screen.orientation.removeEventListener("change", lazyload)
+	// 		unsubscribe()
+	// 	}
+	// })
 </script>
 
 <main class="bg-zinc-950 w-full overflow-y-scroll grid-flow-row grid-cols-4 grid text-center">
-	{#each data as emote}
+	<!-- {#each data as emote} -->
+	<VirtualList items={data} let:item={emote}>
 		<Emote {emote} />
-	{/each}
+	</VirtualList>
+	<!-- {/each} -->
 </main>
