@@ -1,10 +1,10 @@
 <script lang="ts">
 	// import { onMount } from "svelte"
 	import Emote from "./emotelist/Emote.svelte"
-	import type { EmoteData } from "../../../emote_compiler/shared"
-	import VirtualList from "@sveltejs/svelte-virtual-list/VirtualList.svelte"
+	import type { EmoteData } from "../../emote_compiler/shared"
 	// import Search from "./components/Search.svelte"
 	export let data: EmoteData[]
+
 	// let emotelist: HTMLElement
 	// import { searchStore } from "$lib/stores/search"
 	// onMount(() => {
@@ -46,9 +46,9 @@
 </script>
 
 <main class="bg-zinc-950 w-full overflow-y-scroll grid-flow-row grid-cols-4 grid text-center">
-	<!-- {#each data as emote} -->
-	<VirtualList items={data} let:item={emote}>
+	{#each data as emote}
+		<!-- <VirtualList items={data} itemHeight={336} {scrollTop} {containerHeight} let:item={emote}> -->
 		<Emote {emote} />
-	</VirtualList>
-	<!-- {/each} -->
+		<!-- </VirtualList> -->
+	{/each}
 </main>

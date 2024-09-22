@@ -3,8 +3,8 @@
 	export let data: { api: EmoteData[] }
 	import "../app.css"
 
-	import EmoteList from "./components/EmoteList.svelte"
-	import Sidebar from "./components/Sidebar.svelte"
+	import EmoteList from "./../components/EmoteList.svelte"
+	import Sidebar from "./../components/Sidebar.svelte"
 
 	import { searchStore } from "../lib/stores/search"
 	$searchStore.data = data.api
