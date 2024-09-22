@@ -39,10 +39,8 @@
 	})
 </script>
 
-<main class="bg-zinc-950 w-full overflow-y-scroll">
-	<div class="grid-flow-row grid-cols-4 grid text-center">
-		{#each data as emote}
-			<Emote {emote} />
-		{/each}
-	</div>
+<main class="bg-zinc-950 w-full overflow-y-scroll grid-flow-row grid-cols-4 grid text-center">
+	{#each data as emote}
+		<Emote {emote} />
+	{/each}
 </main>
