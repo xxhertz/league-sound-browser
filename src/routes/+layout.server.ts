@@ -19,6 +19,6 @@ export const load: LayoutServerLoad = async () => {
 	})
 
 	return {
-		api: emoteData.slice(0, 64), // remove slice in prod
+		api: emoteData.slice(0, 64), // remove slice after adding virtualization
 	}
 }
