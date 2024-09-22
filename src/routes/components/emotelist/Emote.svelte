@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-	import type { EmoteData } from "../../../emote_compiler/shared"
+	import type { EmoteData } from "../../../../emote_compiler/shared"
 	import EmoteSound from "./EmoteSound.svelte"
 	export let emote: EmoteData
 	let image: HTMLImageElement
 	onMount(() => {
-		if (window.innerHeight + window.scrollY > image.offsetTop) if (image.dataset.src) image.src = image.dataset.src
+		// if (window.innerHeight + window.scrollY > image.offsetTop) if (image.dataset.src) image.src = image.dataset.src
 	})
 </script>
 

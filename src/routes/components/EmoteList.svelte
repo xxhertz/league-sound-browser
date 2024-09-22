@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-	import Emote from "./Emote.svelte"
+	import Emote from "./emotelist/Emote.svelte"
 	import type { EmoteData } from "../../../emote_compiler/shared"
 	// import Search from "./components/Search.svelte"
 	export let data: EmoteData[]
-	import { searchStore } from "../../lib/stores/search"
+	import { searchStore } from "$lib/stores/search"
 	onMount(() => {
 		let images: NodeListOf<HTMLImageElement> = document.querySelectorAll("img.lazy")
 
@@ -17,9 +17,7 @@
 			throttle = setTimeout(() => {
 				images.forEach((image) => {
 					// if bottom of the viewport is beyond the top of the image, load it
-					if (window.innerHeight + window.scrollY > image.offsetTop)
-						if (image.dataset.src)
-							image.src = image.dataset.src
+					if (window.innerHeight + window.scrollY > image.offsetTop) if (image.dataset.src) image.src = image.dataset.src
 				})
 			}, 40)
 		}
