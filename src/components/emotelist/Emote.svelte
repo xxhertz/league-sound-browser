@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte"
-	import type { EmoteData } from "../../../../emote_compiler/shared"
+	import type { EmoteData } from "../../../emote_compiler/shared"
 	import EmoteSound from "./EmoteSound.svelte"
 	export let emote: EmoteData
 	let image: HTMLImageElement

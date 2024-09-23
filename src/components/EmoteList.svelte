@@ -4,7 +4,9 @@
 	import type { EmoteData } from "../../emote_compiler/shared"
 	// import Search from "./components/Search.svelte"
 	export let data: EmoteData[]
+	import { Grid } from "svelte-virtual"
 
+	// $: columnCount
 	// let emotelist: HTMLElement
 	// import { searchStore } from "$lib/stores/search"
 	// onMount(() => {
@@ -46,9 +48,13 @@
 </script>
 
 <main class="bg-zinc-950 w-full overflow-y-scroll grid-flow-row grid-cols-4 grid text-center">
-	{#each data as emote}
-		<!-- <VirtualList items={data} itemHeight={336} {scrollTop} {containerHeight} let:item={emote}> -->
-		<Emote {emote} />
-		<!-- </VirtualList> -->
-	{/each}
+	<!-- {#each data as emote} -->
+	<!-- <VirtualList items={data} itemHeight={336} {scrollTop} {containerHeight} let:item={emote}> -->
+	<Grid itemCount={data.length * 4} columnCount={4} itemHeight={352} itemWidth={336} height={1080}>
+		<div slot="item" let:rowIndex let:columnIndex>
+			<Emote emote={data[Math.min(data.length - 1, columnIndex + rowIndex * 4)]} />
+		</div>
+	</Grid>
+	<!-- </VirtualList> -->
+	<!-- {/each} -->
 </main>
