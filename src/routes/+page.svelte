@@ -15,3 +15,7 @@
 
 	<EmoteList data={$searchStore.filtered} />
 </div>
+
+<svelte:head>
+	<title>League Emote Browser</title>
+</svelte:head>
