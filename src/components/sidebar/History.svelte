@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { history, selected, toggle } from "../../lib/stores/history"
-	$: console.log($history)
 </script>
 
 <div class="text-eggshell flex mb-2 p-2 font-semibold w-full text-left border-b-2 justify-between border-eggshell">
