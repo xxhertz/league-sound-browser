@@ -3,14 +3,14 @@
 	import type { EmoteData } from "../../emote_compiler/shared"
 	import Emote from "./emotelist/Emote.svelte"
 
-	let scrollPos: number = 720 // good enough to render first 3 lines
+	let scrollPos: number = 720 // good enough to render first 3 lines, will look odd on 4k and 1440p monitors but fixes on scroll
 
 	export let data: EmoteData[]
 	let main: HTMLElement
 	onMount(() => {
-		main.addEventListener("scroll", () => {
-			scrollPos = main.scrollTop + main.clientHeight
-		})
+		const updateScroll = () => (scrollPos = main.scrollTop + main.clientHeight)
+		main.addEventListener("scroll", updateScroll)
+		return () => main.removeEventListener("scroll", updateScroll)
 	})
 </script>
 
