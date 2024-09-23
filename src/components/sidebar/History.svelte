@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { history, selected, toggle } from "$lib/stores/history"
+	import { base } from "$app/paths"
 
 	import { download } from "$lib"
 	import type { EmoteData } from "../../../emote_compiler/shared"
 
 	function downloadEmoteId(emote: EmoteData, webp: boolean, ogg: boolean) {
-		if (webp) download(`/finalized/${emote.id}.webp`, `${emote.name}.webp`)
-		if (ogg) download(`/finalized/${emote.id}.ogg`, `${emote.name}.ogg`)
+		if (webp) download(`${base}/finalized/${emote.id}.webp`, `${emote.name}.webp`)
+		if (ogg) download(`${base}/finalized/${emote.id}.ogg`, `${emote.name}.ogg`)
 	}
 
 	function downloadEmotes(webp: boolean, ogg: boolean) {
@@ -31,7 +32,7 @@
 <div class="w-full grid grid-cols-6 gap-2">
 	{#each $history as emote}
 		<button on:click={() => toggle(selected, emote)} class="rounded-lg border-2 {$selected.includes(emote) && 'border-periwinkle'} bg-black">
-			<img class="" src="/finalized/{emote.id}.webp" alt="" />
+			<img class="" src="{base}/finalized/{emote.id}.webp" alt="" />
 		</button>
 	{/each}
 </div>

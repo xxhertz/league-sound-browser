@@ -3,6 +3,7 @@
 	import { volume } from "$lib/stores/volume"
 	import { add, history } from "../../lib/stores/history"
 	export let emote: EmoteData
+	import { base } from "$app/paths"
 
 	let audio: HTMLAudioElement
 </script>
@@ -20,4 +21,4 @@
 		<path d="M24 16v32l24-16L24 16z" class="stroke-ultraviolet stroke-2 fill-periwinkle" />
 	</svg>
 </button>
-<audio src="/finalized/{emote.id}.ogg" bind:this={audio} />
+<audio src="{base}/finalized/{emote.id}.ogg" bind:this={audio} />
