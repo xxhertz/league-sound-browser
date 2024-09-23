@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onDestroy } from "svelte"
-	import { searchStore, searchHandler } from "../../../lib/stores/search"
+	import { searchStore, searchHandler } from "../../lib/stores/search"
 	const unsubscribe = searchStore.subscribe(searchHandler)
 	onDestroy(unsubscribe)
 </script>
