@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { EmoteData } from "../../../../emote_compiler/shared"
+	import type { EmoteData } from "../../../emote_compiler/shared"
 	import { volume } from "$lib/stores/volume"
 	export let emote: EmoteData
 
