@@ -29,5 +29,5 @@
 		</div>
 	</div>
 {:else}
-	<div style={"height: 320px"} />
+	<div class="h-80" />
 {/if}
