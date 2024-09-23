@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { EmoteData } from "../../../emote_compiler/shared"
 	import { volume } from "$lib/stores/volume"
+	import { add, history } from "../../lib/stores/history"
 	export let emote: EmoteData
 
 	let audio: HTMLAudioElement
@@ -10,6 +11,7 @@
 	on:click={() => {
 		audio.volume = $volume / 100
 		audio.play()
+		add(history, emote.id)
 	}}
 	class="group-hover:bg-opacity-75 bg-opacity-0 inset-0 rounded-2xl bg-zinc-950 w-full h-full absolute top-0 left-0 transition-colors duration-100"
 >

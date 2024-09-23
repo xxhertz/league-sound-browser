@@ -8,7 +8,6 @@
 	// tbh this can remain divided by 4, realistically it should be responsive like the document but idgaf it's good enough
 	const emoteHeight = 320 + 24 // 320px height, 24px of padding
 	const topOfBottomEmoteRow = Math.floor(index / 4) * emoteHeight
-	const topOfTopEmoteRow = Math.floor((index - 6 * 4) / 4) * emoteHeight
 	$: topOfScroll = scrollPos - 6 * emoteHeight // 6 rows
 </script>
 
@@ -18,7 +17,7 @@
 {#if scrollPos > topOfBottomEmoteRow && topOfScroll < topOfBottomEmoteRow}
 	<div class="text-eggshell bg-gradient-to-b h-80 w-full rounded-2xl hover:scale-[102%] hover:via-periwinkle/50 via-eggshell/0 transition-all duration-100 from-eggshell/0 to-zinc-950">
 		<div class="relative group from-zinc-900 h-[calc(100%-2px)] w-[calc(100%-2px)] left-[1px] top-[1px] via-zinc-900 via-75% to-zinc-950 py-4 rounded-2xl bg-gradient-to-b">
-			<img class="lazy block w-64 h-64 m-auto" draggable="false" src="/finalized/{emote.id}.webp" alt="" />
+			<img class="block w-64 h-64 m-auto" draggable="false" src="/finalized/{emote.id}.webp" alt="" />
 
 			{#if emote.hasOgg}
 				<EmoteSound {emote} />

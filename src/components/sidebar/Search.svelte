@@ -5,8 +5,4 @@
 	onDestroy(unsubscribe)
 </script>
 
-<input
-	class="outline-none rounded-lg ring-0 w-full h-12 font-semibold p-4 mb-4 placeholder-current bg-zinc-950/40 border-2 border-transparent focus:border-eggshell text-eggshell"
-	placeholder="Search emotes..."
-	bind:value={$searchStore.search}
-/>
+<input bind:value={$searchStore.search} placeholder="Search emotes..." class="outline-none rounded-lg ring-0 w-full h-[5%] font-semibold p-4 mb-4 placeholder-current bg-zinc-950/40 border-2 border-transparent focus:border-b-eggshell text-eggshell" />
