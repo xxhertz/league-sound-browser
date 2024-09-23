@@ -1,35 +1,21 @@
 <script lang="ts">
-	import Emote from "./emotelist/Emote.svelte"
-	import type { EmoteData } from "../../emote_compiler/shared"
 	import { onMount } from "svelte"
+	import type { EmoteData } from "../../emote_compiler/shared"
+	import Emote from "./emotelist/Emote.svelte"
+
+	let scrollPos: number = 720 // good enough to render first 3 lines
+
 	export let data: EmoteData[]
-	// forget it! let's make our own virtualizer! yay! all the svelte virtualizers are GARBAGE for grids
-	let columnCount = 4 //window.innerWidth >= 1536 ? 4 : window.innerWidth >= 1280 ? 3 : window.innerWidth >= 1024 ? 2 : 1
-	let container: HTMLElement
-	let measureCard: HTMLElement
+	let main: HTMLElement
 	onMount(() => {
-		const frame = requestAnimationFrame(function onFrame() {
-			console.log(window.innerWidth)
-			if (window.innerWidth >= 1536)
-				columnCount = 4 // 2xl
-			else if (window.innerWidth >= 1280)
-				columnCount = 3 // xl
-			else if (window.innerWidth >= 1024)
-				columnCount = 2 // lg
-			else columnCount = 1 // default (mobile first)
-			requestAnimationFrame(onFrame)
+		main.addEventListener("scroll", () => {
+			scrollPos = main.scrollTop + main.clientHeight
 		})
-
-		const containerRect = container.getBoundingClientRect()
-		const elementRect = measureCard.getBoundingClientRect()
-
-		return () => cancelAnimationFrame(frame)
 	})
 </script>
 
-<main class="bg-zinc-950 w-full overflow-y-scroll grid-flow-row 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 p-4 gap-x-8 gap-y-6 grid text-center">
-	<Emote emote={data[0]} hidden={true} />
-	{#each data as emote}
-		<Emote {emote} />
+<main bind:this={main} class="bg-zinc-950 w-full overflow-y-scroll grid-flow-row 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 p-4 gap-x-8 gap-y-6 grid text-center">
+	{#each data as emote, index}
+		<Emote {emote} {index} {scrollPos} />
 	{/each}
 </main>
