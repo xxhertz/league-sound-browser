@@ -7,5 +7,5 @@ export type ApiEmote = {
 
 export type EmoteData = ApiEmote & {
 	hasOgg: boolean
-	hasWebp: boolean
+	png: string
 }

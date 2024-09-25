@@ -18790,6 +18790,39 @@
           }
         },
         {
+          "key": 1434824500,
+          "value": {
+            "items": [
+              {
+                "key": 2956205910,
+                "type": "u32",
+                "value": 4681
+              },
+              {
+                "key": 719095870,
+                "type": "hash",
+                "value": 818766467
+              },
+              {
+                "key": 1415849216,
+                "type": "string",
+                "value": "ASSETS/Loadouts/SummonerEmotes/TFT/4681_Sweating_Blitzcrank_Selector.ACCESSORIES_14_19.dds"
+              },
+              {
+                "key": 1923074361,
+                "type": "f32",
+                "value": 0.800000011920929
+              },
+              {
+                "key": 2994461618,
+                "type": "string",
+                "value": "game_summoner_emote_name_4681"
+              }
+            ],
+            "name": 1950165531
+          }
+        },
+        {
           "key": 1439494148,
           "value": {
             "items": [
@@ -18916,6 +18949,39 @@
                 "key": 2994461618,
                 "type": "string",
                 "value": "game_summoner_emote_name_3911"
+              }
+            ],
+            "name": 1950165531
+          }
+        },
+        {
+          "key": 1451602119,
+          "value": {
+            "items": [
+              {
+                "key": 2956205910,
+                "type": "u32",
+                "value": 4680
+              },
+              {
+                "key": 719095870,
+                "type": "hash",
+                "value": 2463130986
+              },
+              {
+                "key": 1415849216,
+                "type": "string",
+                "value": "ASSETS/Loadouts/SummonerEmotes/TFT/4680_Easy_Selector.ACCESSORIES_14_19.dds"
+              },
+              {
+                "key": 1923074361,
+                "type": "f32",
+                "value": 0.800000011920929
+              },
+              {
+                "key": 2994461618,
+                "type": "string",
+                "value": "game_summoner_emote_name_4680"
               }
             ],
             "name": 1950165531
@@ -19345,6 +19411,39 @@
                 "key": 2994461618,
                 "type": "string",
                 "value": "game_summoner_emote_name_3903"
+              }
+            ],
+            "name": 1950165531
+          }
+        },
+        {
+          "key": 1485157357,
+          "value": {
+            "items": [
+              {
+                "key": 2956205910,
+                "type": "u32",
+                "value": 4682
+              },
+              {
+                "key": 719095870,
+                "type": "hash",
+                "value": 2491609173
+              },
+              {
+                "key": 1415849216,
+                "type": "string",
+                "value": "ASSETS/Loadouts/SummonerEmotes/TFT/4682_Hrmph_Selector.ACCESSORIES_14_19.dds"
+              },
+              {
+                "key": 1923074361,
+                "type": "f32",
+                "value": 0.800000011920929
+              },
+              {
+                "key": 2994461618,
+                "type": "string",
+                "value": "game_summoner_emote_name_4682"
               }
             ],
             "name": 1950165531
@@ -44337,6 +44436,39 @@
           }
         },
         {
+          "key": 3261069042,
+          "value": {
+            "items": [
+              {
+                "key": 2956205910,
+                "type": "u32",
+                "value": 4676
+              },
+              {
+                "key": 719095870,
+                "type": "hash",
+                "value": 3675264560
+              },
+              {
+                "key": 1415849216,
+                "type": "string",
+                "value": "ASSETS/Loadouts/SummonerEmotes/Events/FrightNight/4676_Get_Amped_Selector.ACCESSORIES_14_19.dds"
+              },
+              {
+                "key": 1923074361,
+                "type": "f32",
+                "value": 0.800000011920929
+              },
+              {
+                "key": 2994461618,
+                "type": "string",
+                "value": "game_summoner_emote_name_4676"
+              }
+            ],
+            "name": 1950165531
+          }
+        },
+        {
           "key": 3262054780,
           "value": {
             "items": [
@@ -44430,6 +44562,39 @@
                 "key": 2994461618,
                 "type": "string",
                 "value": "game_summoner_emote_name_3147"
+              }
+            ],
+            "name": 1950165531
+          }
+        },
+        {
+          "key": 3277846661,
+          "value": {
+            "items": [
+              {
+                "key": 2956205910,
+                "type": "u32",
+                "value": 4677
+              },
+              {
+                "key": 719095870,
+                "type": "hash",
+                "value": 1482770032
+              },
+              {
+                "key": 1415849216,
+                "type": "string",
+                "value": "ASSETS/Loadouts/SummonerEmotes/Events/FrightNight/4677_Dat_Boi_Selector.ACCESSORIES_14_19.dds"
+              },
+              {
+                "key": 1923074361,
+                "type": "f32",
+                "value": 0.800000011920929
+              },
+              {
+                "key": 2994461618,
+                "type": "string",
+                "value": "game_summoner_emote_name_4677"
               }
             ],
             "name": 1950165531
@@ -44535,6 +44700,39 @@
           }
         },
         {
+          "key": 3294624280,
+          "value": {
+            "items": [
+              {
+                "key": 2956205910,
+                "type": "u32",
+                "value": 4678
+              },
+              {
+                "key": 719095870,
+                "type": "hash",
+                "value": 793777053
+              },
+              {
+                "key": 1415849216,
+                "type": "string",
+                "value": "ASSETS/Loadouts/SummonerEmotes/Events/FrightNight/4678_Sweet_Dreams_Selector.ACCESSORIES_14_19.dds"
+              },
+              {
+                "key": 1923074361,
+                "type": "f32",
+                "value": 0.800000011920929
+              },
+              {
+                "key": 2994461618,
+                "type": "string",
+                "value": "game_summoner_emote_name_4678"
+              }
+            ],
+            "name": 1950165531
+          }
+        },
+        {
           "key": 3295610018,
           "value": {
             "items": [
@@ -44628,6 +44826,39 @@
                 "key": 2994461618,
                 "type": "string",
                 "value": "game_summoner_emote_name_3145"
+              }
+            ],
+            "name": 1950165531
+          }
+        },
+        {
+          "key": 3311401899,
+          "value": {
+            "items": [
+              {
+                "key": 2956205910,
+                "type": "u32",
+                "value": 4679
+              },
+              {
+                "key": 719095870,
+                "type": "hash",
+                "value": 463219387
+              },
+              {
+                "key": 1415849216,
+                "type": "string",
+                "value": "ASSETS/Loadouts/SummonerEmotes/Events/FrightNight/4679_How_Could_You_Selector.ACCESSORIES_14_19.dds"
+              },
+              {
+                "key": 1923074361,
+                "type": "f32",
+                "value": 0.800000011920929
+              },
+              {
+                "key": 2994461618,
+                "type": "string",
+                "value": "game_summoner_emote_name_4679"
               }
             ],
             "name": 1950165531

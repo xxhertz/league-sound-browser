@@ -21,4 +21,4 @@
 		<path d="M24 16v32l24-16L24 16z" class="stroke-ultraviolet stroke-2 fill-periwinkle" />
 	</svg>
 </button>
-<audio src="{base}/finalized/{emote.id}.ogg" bind:this={audio} />
+<audio src="{base}/finalized/{emote.id}.ogg" preload="none" bind:this={audio} />
