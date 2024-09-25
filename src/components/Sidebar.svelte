@@ -8,7 +8,7 @@
 	<div class="relative bg-zinc-950/50 h-full p-4 rounded-lg backdrop-blur-lg">
 		<Search />
 		<Volume />
-		<div class="absolute bottom-0 m-4 left-0 w-full">
+		<div class="absolute bottom-0 p-4 left-0 w-full">
 			<History />
 		</div>
 	</div>
