@@ -5,14 +5,14 @@
 	import { download } from "$lib"
 	import type { EmoteData } from "../../../emote_compiler/shared"
 
-	function downloadEmoteId(emote: EmoteData, webp: boolean, ogg: boolean) {
-		if (webp) download(`${base}/finalized/${emote.id}.webp`, `${emote.name}.webp`)
+	function downloadEmoteId(emote: EmoteData, png: boolean, ogg: boolean) {
+		if (png) download(emote.png, `${emote.name}.png`)
 		if (ogg) download(`${base}/finalized/${emote.id}.ogg`, `${emote.name}.ogg`)
 	}
 
-	function downloadEmotes(webp: boolean, ogg: boolean) {
+	function downloadEmotes(png: boolean, ogg: boolean) {
 		for (const emote of $selected) {
-			downloadEmoteId(emote, webp, ogg)
+			downloadEmoteId(emote, png, ogg)
 		}
 	}
 </script>
