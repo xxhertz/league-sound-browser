@@ -1,3 +1,3 @@
-emote_compiler/bin/* linguist-vendored
+emote_compiler/bin/** linguist-vendored
 emote_compiler/emotehashmap.json linguist-vendored
 emote_compiler/eventhashmap.json linguist-vendored
