@@ -11,7 +11,6 @@
 	$: bottomOfRow = rowPosition + rowHeight
 </script>
 
-<!-- {#if rowPosition > scrollPos && bottomOfRow < scrollPos + bottomScreen} -->
 {#if bottomOfRow > scrollPos && rowPosition < scrollPos + bottomScreen}
 	<div class="grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-x-8 p-4 grid grid-flow-row">
 		{#each emotes as emote}

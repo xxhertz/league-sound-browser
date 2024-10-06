@@ -11,23 +11,19 @@
 	let main: HTMLElement
 
 	onMount(() => {
-		function calcRows() {
-			return data
-				.map((_, i) => {
-					if (i % rowCount === 0) return data.slice(i, i + rowCount)
-				})
-				.filter((row) => row !== undefined)
-		}
 		const updateScroll = () => {
 			scrollPos = main.scrollTop
 			bottomScreen = main.clientHeight
 		}
 		const updateRowCount = () => {
-			const clientWidth = document.body.clientWidth
+			const clientWidth = window.innerWidth
 			// 2xl, xl, lg, default/mobile
 			rowCount = clientWidth >= 1536 ? 4 : clientWidth >= 1280 ? 3 : clientWidth >= 1024 ? 2 : 1
-			$emoteRows = calcRows()
-			console.log("update rowcount")
+			$emoteRows = data
+				.map((_, i) => {
+					if (i % rowCount === 0) return data.slice(i, i + rowCount)
+				})
+				.filter((row) => row !== undefined)
 		}
 
 		updateScroll()
@@ -35,10 +31,12 @@
 
 		main.addEventListener("scroll", updateScroll)
 		window.addEventListener("resize", updateRowCount)
+		window.addEventListener("resize", updateScroll)
 
 		return () => {
 			main.removeEventListener("scroll", updateScroll)
 			window.removeEventListener("resize", updateRowCount)
+			window.removeEventListener("resize", updateScroll)
 		}
 	})
 </script>
