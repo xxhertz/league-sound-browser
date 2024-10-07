@@ -12,8 +12,10 @@
 
 	onMount(() => {
 		const updateScroll = () => {
-			scrollPos = main.scrollTop
-			bottomScreen = main.clientHeight
+			if (main) {
+				scrollPos = main.scrollTop
+				bottomScreen = main.clientHeight
+			}
 		}
 		const updateRowCount = () => {
 			const clientWidth = window.innerWidth
@@ -41,7 +43,7 @@
 	})
 </script>
 
-<main bind:this={main} class="bg-zinc-950 w-full overflow-y-scroll gap-y-6 text-center text-white">
+<main bind:this={main} class="w-full overflow-y-scroll gap-y-6 text-center text-white">
 	{#if $emoteRows}
 		{#each $emoteRows as emoteRow, index}
 			<EmoteRow {bottomScreen} emotes={emoteRow} {index} {scrollPos} />
